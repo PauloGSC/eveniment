@@ -1,0 +1,37 @@
+{
+  "name": "recruitment_compasso",
+  "version": "1.0.0",
+  "description": "Compasso test.",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henriqueherrera/recruitment_compasso.git"
+  },
+  "author": "Richard Henrique Herrera Silva",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/henriqueherrera/recruitment_compasso/issues"
+  },
+  "homepage": "https://github.com/henriqueherrera/recruitment_compasso#readme",
+  "dependencies": {
+    "@hapi/hapi": "^20.1.0",
+    "@hapi/inert": "^6.0.3",
+    "bluebird": "^3.7.2",
+    "cast-array": "^1.0.1",
+    "disinfect": "^1.1.0",
+    "glob": "^7.1.6",
+    "joi": "^13.7.0",
+    "lodash": "^4.17.20",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.7",
+    "qs": "^6.9.6"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}
