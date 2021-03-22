@@ -20,10 +20,6 @@ class ReportClient {
         "email": "66556556a9@gmail.com"
       });
       print(response);
-
-      /* final model = await post(_host + '/signup',
-          body: json.encode(login), headers: await getHeaders());
-      print(model); */
       return true;
     } catch (err) {
       print(err);

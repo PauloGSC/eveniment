@@ -1,6 +1,6 @@
 import 'package:eveniment/services/report_client.dart';
 import 'package:flutter/material.dart';
-import 'clipper.dart';
+import 'package:eveniment/components/clipper.dart';
 
 class Login extends StatefulWidget {
   @override
