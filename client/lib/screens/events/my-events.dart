@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:event/components/drawer/drawer.dart';
+import 'package:eveniment/components/drawer/drawer.dart';
 
-class Menu extends StatelessWidget {
+class MyEvents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.only(right: 60.0),
-          child: Center(child: Text('Quick Event')),
+          child: Center(child: Text('Meus Eventos')),
         ),
         automaticallyImplyLeading: true,
       ),
@@ -60,7 +60,7 @@ class ListItemWidget extends State<SwipeList> {
                 children: <Widget>[
                   const ListTile(
                     // leading: Icon(Icons.album, size: 70),
-                    title: Text('Nome do evento',
+                    title: Text('Palestra de I.A',
                         style: TextStyle(color: Colors.black)),
                     subtitle: Text(
                       '12/05/2020, 12:00 - 17:00',
@@ -73,9 +73,10 @@ class ListItemWidget extends State<SwipeList> {
                       ClipRRect(
                           borderRadius: BorderRadius.circular(25),
                           child: Image.asset(
-                            'assets/login.jpg',
+                            'assets/bannerpalestraia.jpg',
                             width: MediaQuery.of(context).size.width - 40,
                             height: 300,
+                            scale: 4,
                             fit: BoxFit.cover,
                           )),
                     ],
@@ -92,7 +93,8 @@ class ListItemWidget extends State<SwipeList> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       FlatButton(
-                        child: const Text('Tenho Interesse',
+                        child: const Text(
+                            'Enviar Certificados aos participantes',
                             style: TextStyle(color: Colors.blue)),
                         onPressed: () {},
                       ),

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:event/components/drawer/drawer.dart';
+import 'package:eveniment/components/drawer/drawer.dart';
 
-class MyCertificates extends StatelessWidget {
+class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.only(right: 60.0),
-          child: Center(child: Text('Meus Certificados')),
+          child: Center(child: Text('Quick Event')),
         ),
         automaticallyImplyLeading: true,
       ),
@@ -16,10 +16,10 @@ class MyCertificates extends StatelessWidget {
       drawer: QuickDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/menu');
+          Navigator.pushNamed(context, '/formEvent');
         },
         child: Icon(
-          Icons.home,
+          Icons.add,
           color: Colors.white,
         ),
         focusColor: Colors.white,
@@ -59,8 +59,8 @@ class ListItemWidget extends State<SwipeList> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   const ListTile(
-                    leading: Icon(Icons.picture_as_pdf, size: 70),
-                    title: Text('Palestra de I.A',
+                    // leading: Icon(Icons.album, size: 70),
+                    title: Text('Nome do evento',
                         style: TextStyle(color: Colors.black)),
                     subtitle: Text(
                       '12/05/2020, 12:00 - 17:00',
@@ -68,10 +68,23 @@ class ListItemWidget extends State<SwipeList> {
                     ),
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                          borderRadius: BorderRadius.circular(25),
+                          child: Image.asset(
+                            'assets/login.jpg',
+                            width: MediaQuery.of(context).size.width - 40,
+                            height: 300,
+                            fit: BoxFit.cover,
+                          )),
+                    ],
+                  ),
+                  Row(
                     children: [
                       Padding(
                         padding: EdgeInsets.all(20),
-                        child: Text('Duração do evento: 5 horas'),
+                        child: Text('Alguma descrição sobre o evento '),
                       )
                     ],
                   ),
@@ -79,7 +92,7 @@ class ListItemWidget extends State<SwipeList> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       FlatButton(
-                        child: const Text('Baixar',
+                        child: const Text('Tenho Interesse',
                             style: TextStyle(color: Colors.blue)),
                         onPressed: () {},
                       ),

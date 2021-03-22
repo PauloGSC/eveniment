@@ -1,6 +1,6 @@
-import 'package:event/services/report_client.dart';
+import 'package:eveniment/services/report_client.dart';
 import 'package:flutter/material.dart';
-import 'clipper.dart';
+import 'package:eveniment/components/clipper.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -53,7 +53,7 @@ class _LoginState extends State<Login> {
                     height: 154,
                     child: Align(
                       child: Text(
-                        "QUICK EVENT",
+                        "EVENIMENT",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
