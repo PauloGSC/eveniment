@@ -1,4 +1,4 @@
-import 'package:event/services/report_client.dart';
+import 'package:eveniment/services/report_client.dart';
 import 'package:flutter/material.dart';
 import 'clipper.dart';
 

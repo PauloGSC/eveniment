@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:event/routes.dart';
+import 'package:eveniment/routes.dart';
 
 void main() {
   return runApp(MyApp());

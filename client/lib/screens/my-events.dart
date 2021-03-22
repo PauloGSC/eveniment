@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:event/components/drawer/drawer.dart';
+import 'package:eveniment/components/drawer/drawer.dart';
 
 class MyEvents extends StatelessWidget {
   @override

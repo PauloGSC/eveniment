@@ -1,10 +1,10 @@
-import 'package:event/screens/formEvent.dart';
-import 'package:event/screens/my-account.dart';
-import 'package:event/screens/my-certificates.dart';
-import 'package:event/screens/my-events.dart';
+import 'package:eveniment/screens/formEvent.dart';
+import 'package:eveniment/screens/my-account.dart';
+import 'package:eveniment/screens/my-certificates.dart';
+import 'package:eveniment/screens/my-events.dart';
 import 'package:flutter/material.dart';
-import 'package:event/screens/login.dart';
-import 'package:event/screens/menu.dart';
+import 'package:eveniment/screens/login.dart';
+import 'package:eveniment/screens/menu.dart';
 
 final routes = {
   '/': (BuildContext context) => Login(),
