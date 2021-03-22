@@ -53,7 +53,7 @@ class _LoginState extends State<Login> {
                     height: 154,
                     child: Align(
                       child: Text(
-                        "QUICK EVENT",
+                        "EVENIMENT",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
