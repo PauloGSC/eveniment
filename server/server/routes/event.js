@@ -14,24 +14,29 @@ exports.plugin = {
 
 		server.route([
 			{
-        method: 'POST',
+				method: 'GET',
+				path: '/api/event',
+				handler: controller.list,
+			},
+			{
+				method: 'POST',
 				path: '/api/event',
 				handler: controller.create,
 				options: {
 					validate: {
 						payload: Joi.object({
-							name: Joi.string().max(20).required(),
-              cdConfirm: Joi.string().max(20).required(),
-              description: Joi.string().max(200).required(),
-              dtInit: Joi.string().required(),
-              dtEnd: Joi.string().required(),
-              dtUpdate: Joi.string().required(),
-              image: Joi.string().max(40).required(),
-              idUs: Joi.number().required(),
+							name: Joi.string().max(99).required(),
+							subscriptionLink: Joi.string().max(150),
+							description: Joi.string().max(300).required(),
+							dtInit: Joi.string().required(),
+							dtEnd: Joi.string().required(),
+							dtUpdate: Joi.string().required(),
+							image: Joi.string().required(),
+							idUs: Joi.number().required(),
 						})
 					}
 				}
-      }
+			}
 		]);
 	}
 }
