@@ -5,7 +5,6 @@ const path = require('path');
 
 require('../app/eveniment');
 
-
 const init = async () => {
 
   const server = Hapi.server({
