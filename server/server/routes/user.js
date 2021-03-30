@@ -14,23 +14,24 @@ exports.plugin = {
 
 		server.route([
 			{
-        method: 'POST',
+				method: 'POST',
 				path: '/api/user',
 				handler: controller.create,
 				options: {
 					validate: {
 						payload: Joi.object({
-							name: Joi.string().min(1).max(10).required(),
-							password: Joi.string().max(30).required(),
-							email: Joi.string().max(30).required(),
+							name: Joi.string().min(1).max(99).required(),
+							password: Joi.string().max(200).required(),
+							image: Joi.string(),
+							email: Joi.string().max(99).required(),
 							isAdmin: Joi.boolean().required(),
-							registration: Joi.number().required(),
+							registration: Joi.number(),
 							ocupation: Joi.string().max(20).required(),
 							dtUpdate: Joi.string().required(),
 						})
 					}
 				}
-      }
+			}
 		]);
 	}
 }
