@@ -1,32 +1,30 @@
  
 DROP DATABASE IF EXISTS eveniment;
-useCREATE DATABASE eveniment DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE eveniment DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 USE eveniment;
 
 create table user(
     idUser integer primary key not null AUTO_INCREMENT,
-    name varchar(10) not null,
-    password varchar(30) not null,
-    email varchar(30) not null,
-    isAdmin boolean not null,
-    registration integer not null,
+    name varchar(99) not null,
+    password varchar(200) not null,
+    image longblob,
+    email varchar(99) not null,
+    isAdmin boolean,
+    registration integer,
     ocupation varchar(20) not null,
-    dtUpdate date not null
+    dtUpdate datetime
 );
 
 create table event(
     idEvent integer primary key not null AUTO_INCREMENT,
-    name varchar (20) not null,
-    cdConfirm varchar (20) not null,
-    description varchar(200) not null,
-    dtInit date not null,
-    dtEnd date not null,
-    dtUpdate date not null,
-    image varchar (40) not null,
+    name varchar (99) not null,
+    subscriptionLink varchar (150),
+    description varchar(300) not null,
+    dtInit datetime not null,
+    dtEnd datetime not null,
+    dtUpdate datetime not null,
+    image longblob not null,
     idUs integer not null,
     foreign key (idUs) references user(idUser)
 );
-
-INSERT INTO `user` FROM (`name`, `password`, `email`, `isAdmin`, `registration`, `ocupation`, `dtUpdate` ) VALUES
-(00, 'Jaqueline', 'Pgp@13', 'false', 'Estudante');
