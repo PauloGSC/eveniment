@@ -1,54 +1,71 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:dio/dio.dart';
+import 'package:eveniment/models/event.dart';
+import 'package:http/http.dart' as http;
+
+import 'package:http/http.dart' show get, post, put, delete;
 
 class ReportClient {
-  static final String _host = "http://10.0.2.2:8000/api";
-  Response response;
-  Dio dio = new Dio();
+  static final _host = 'http://192.168.0.115:8000/api';
 
   Future<dynamic> getHeaders() async {
     return {"Content-Type": "application/json"};
   }
 
-  Future<bool> createLogin(Map<String, dynamic> login) async {
+  Future<bool> createEvent(Map<String, dynamic> model) async {
     try {
-      print(_host + "/signup");
-      response = await dio.post("http://10.0.2.2:8000/api/signup", data: {
-        "username": "henriq",
-        "password": "123456789",
-        "email": "66556556a9@gmail.com"
-      });
-      print(response);
+      final response = await post(
+        Uri.parse(_host + '/event'),
+        body: json.encode(model),
+        headers: await this.getHeaders(),
+      );
       return true;
     } catch (err) {
-      print(err);
       return false;
     }
   }
 
-  /* Future<void> fetchExpenseItems() async {
-    AppDatabase _db = await db;
+  Future<List<EventModel>> listEvents() async {
+    try {
+      List<EventModel> events = [];
 
-    List<LoginEntity> _login = await _db.loginDao.getAll();
+      final response = await get(
+        Uri.parse(_host + '/event?idUser=1'),
+        headers: await this.getHeaders(),
+      );
 
-    if (_login.length > 0) {
-      LoginEntity model = _login[0];
-      Map<String, String> headers = await this.getHeaders();
-      String domain = model.domain;
-      final expenseItems =
-          await post(_host + '/api/$domain/Expenses/ListarItensDespesa',
-              body: json.encode({
-                "dominio": domain,
-                "rota_dominio": "app.erpm8.cloud",
-                "grant_type": "password",
-              }),
-              headers: headers);
-
-      print(expenseItems.body);
-
-      model.expenseItems = expenseItems.body;
-      await _db.loginDao.updateItem(model);
+      List results = json.decode(response.body);
+      results.forEach((result) => events.add(EventModel.fromJSON(result)));
+      return events;
+    } catch (err) {
+      print(err);
+      return [];
     }
-  } */
+  }
+
+  Future<bool> subscribeEvent(Map<String, dynamic> model) async {
+    try {
+      final response = await post(
+        Uri.parse(_host + '/subscribe'),
+        body: json.encode(model),
+        headers: await this.getHeaders(),
+      );
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  Future<bool> cancelSubscribeEvent(int id) async {
+    try {
+      final response = await delete(
+        Uri.parse(_host + '/subscribe/' + id.toString()),
+        headers: await this.getHeaders(),
+      );
+
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
 }

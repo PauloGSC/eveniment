@@ -1,7 +1,7 @@
 'use strict';
 
 const Controller = require('../controllers/userCtrl');
-const Joi = require('joi');
+const schema = require('./schemas/user');
 
 exports.plugin = {
 	name: 'routes-user',
@@ -19,16 +19,35 @@ exports.plugin = {
 				handler: controller.create,
 				options: {
 					validate: {
-						payload: Joi.object({
-							name: Joi.string().min(1).max(99).required(),
-							password: Joi.string().max(200).required(),
-							image: Joi.string(),
-							email: Joi.string().max(99).required(),
-							isAdmin: Joi.boolean().required(),
-							registration: Joi.number(),
-							ocupation: Joi.string().max(20).required(),
-							dtUpdate: Joi.string().required(),
-						})
+						payload: schema.payload,
+					}
+				}
+			}, {
+				method: 'PUT',
+				path: '/api/user',
+				handler: controller.update,
+				options: {
+					validate: {
+						payload: schema.payload,
+						query: schema.id,
+					}
+				}
+			}, {
+				method: 'DELETE',
+				path: '/api/user/{id}',
+				handler: controller.delete,
+				options: {
+					validate: {
+						params: schema.id,
+					}
+				}
+			}, {
+				method: 'GET',
+				path: '/api/user/{id}',
+				handler: controller.show,
+				options: {
+					validate: {
+						params: schema.id,
 					}
 				}
 			}

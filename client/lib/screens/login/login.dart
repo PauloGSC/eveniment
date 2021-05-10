@@ -26,7 +26,6 @@ class _LoginState extends State<Login> {
       super.initState();
     }
 
-    //QUICK EVENT logo widget
     Widget logo() {
       return Padding(
         padding:
@@ -169,7 +168,7 @@ class _LoginState extends State<Login> {
       _password = _passwordController.text;
       _displayName = _nameController.text;
 
-      client.createLogin(model);
+      //client.createLogin(model);
       _emailController.clear();
       _passwordController.clear();
       _nameController.clear();
@@ -431,7 +430,7 @@ class _LoginState extends State<Login> {
     }
 
     return Scaffold(
-        resizeToAvoidBottomPadding: false,
+        //     resizeToAvoidBottomPadding: false,
         key: _scaffoldKey,
         backgroundColor: Theme.of(context).primaryColor,
         body: Column(

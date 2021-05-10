@@ -1,5 +1,9 @@
+import 'package:eveniment/bloc/eventFormBloc.dart';
+import 'package:eveniment/bloc/listEventsBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:eveniment/routes.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   return runApp(MyApp());
@@ -9,15 +13,27 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          hintColor: Color(0xFFC0F0E8),
-          primaryColor: Color(0xFF80E1D1),
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<FormEventBloc>.value(value: FormEventBloc()),
+        ChangeNotifierProvider<ListEventsBloc>.value(value: ListEventsBloc()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
+          hintColor: Colors.blue[200],
+          primaryColor: Colors.blue,
           fontFamily: "Montserrat",
-          canvasColor: Colors.transparent),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+        ),
+        initialRoute: '/',
+        routes: routes,
+      ),
     );
   }
 }

@@ -34,6 +34,9 @@ class QuickDrawer extends StatelessWidget {
               ),
             ),
           ),
+          _CustomListTile(Icons.home, 'Home', () {
+            Navigator.pushNamed(context, '/menu');
+          }),
           _CustomListTile(Icons.supervised_user_circle, 'Minha Conta', () {
             Navigator.pushNamed(context, '/myAccount');
           }),
