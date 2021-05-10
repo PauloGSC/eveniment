@@ -14,11 +14,12 @@ exports.plugin = {
       ignore: '**/schema/*'
     };
 
-    castArray(__dirname+'/../../routes/**/*.js').forEach(function(pattern) {
+    castArray(__dirname + '/../../routes/**/*.js').forEach(function (pattern) {
       const files = glob.sync(pattern, globOptions);
-      
+
       files.forEach(function (file) {
-        server.register(require(file));
+        if (!file.includes('schemas'))
+          server.register(require(file));
       });
     });
   }

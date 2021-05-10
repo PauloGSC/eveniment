@@ -1,9 +1,19 @@
 'use strict'
 
-class UserSrv {
+class SubscribeSrv {
 
   constructor(repository) {
     this.repository = repository;
+  }
+
+  async findAll(query) {
+    try {
+      const [_models] = await this.repository.execute('SELECT * FROM subscribe');
+
+      return _models;
+    } catch (err) {
+      return err;
+    }
   }
 
   async create(model) {
@@ -11,9 +21,8 @@ class UserSrv {
       const columns = Object.keys(model);
       const data = columns.map(key => typeof model[key] == 'string' ? `"${model[key]}"` : model[key]);
 
-      const query = `INSERT INTO user (${columns.join(',')})` +
+      const query = `INSERT INTO subscribe (${columns.join(',')})` +
         ` VALUES (` + data.join(',') + `)`;
-      console.log(query);
       const [response] = await this.repository.execute(query);
 
       return response.insertId;
@@ -27,7 +36,7 @@ class UserSrv {
       const columns = Object.keys(model);
       const data = columns.map(key => `${key}=` + (typeof model[key] == 'string' ? `"${model[key]}"` : model[key]));
 
-      const query = `UPDATE user` +
+      const query = `UPDATE subscribe` +
         ` set ` + data.join(',') + ` WHERE id=${id}`;
       const [response] = await this.repository.execute(query);
 
@@ -39,20 +48,18 @@ class UserSrv {
 
   async delete(id) {
     try {
-      const _query = `DELETE FROM user WHERE id=${id}`;
+      const _query = `DELETE FROM subscribe WHERE id = ${id}`;
       const [response] = await this.repository.execute(_query);
 
       return response.affectedRows;
     } catch (err) {
-      console.log(err);
-
       return err;
     }
   }
 
   async showById(id) {
     try {
-      const [_models] = await this.repository.execute('SELECT * FROM user where id=' + id);
+      const [_models] = await this.repository.execute('SELECT * FROM subscribe where id=' + id);
 
       return _models.length ? _models[0] : {};
     } catch (err) {
@@ -61,4 +68,4 @@ class UserSrv {
   }
 }
 
-module.exports = UserSrv;
+module.exports = SubscribeSrv;
