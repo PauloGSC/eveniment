@@ -8,13 +8,37 @@ class EventController {
     this.server = server;
   }
 
-  async list(request, h) {
+  async findAll(request, h) {
     try {
-      const params = qs.parse(request.query);
-      const _eventService = request['services'].EventSrv;
-      const events = await _eventService.find(params);
+      const _eventSrv = request['services'].EventSrv;
+      const _models = await _eventSrv.findAll({
+        idUser: request.user.id
+      });
 
-      return h.response(events);
+      return h.response(_models);
+    } catch (err) {
+      return h.response(err);
+    }
+  }
+
+  async findMyEvents(request, h) {
+    try {
+      const _eventSrv = request['services'].EventSrv;
+      const _models = await _eventSrv.findMyEvents({
+        idUser: request.user.id
+      });
+
+      return h.response(_models);
+    } catch (err) {
+      return h.response(err);
+    }
+  }
+
+  async findById(request, h) {
+    try {
+      const _eventSrv = request['services'].EventSrv;
+      const _models = await _eventSrv.findById(request.params.id);
+      return h.response(_models);
     } catch (err) {
       return h.response(err);
     }
@@ -22,34 +46,25 @@ class EventController {
 
   async create(request, h) {
     try {
-      const _eventService = request['services'].EventSrv;
-      const _id = await _eventService.create(request.payload);
+      const _eventSrv = request['services'].EventSrv;
+      const _model = await _eventSrv.create(request.payload);
 
-      if (typeof _id != 'number')
-        throw { message: 'Erro ao criar evento!' };
-
-      return h.response({
-        id: _id,
-        message: 'Criado com sucesso!'
-      });
+      return h.response(_model);
     } catch (err) {
       return h.response(err);
     }
   }
 
+
   async update(request, h) {
     try {
-      const params = qs.parse(request.query);
-      const _eventService = request['services'].EventSrv;
-      const response = await _eventService.update(request.payload, params.id);
-
-      if (!response)
-        throw { message: 'Erro ao atualizar evento!' };
+      const _eventSrv = request['services'].EventSrv;
+      const _response = await _eventSrv.update(request.payload, request.params.id);
 
       return h.response({
-        id: params.id,
-        message: 'Atualizado com sucesso!'
+        message: _response[0] ? 'Atualizado com sucesso!' : 'Não foi possível atualizar!'
       });
+
     } catch (err) {
       return h.response(err);
     }
@@ -57,26 +72,13 @@ class EventController {
 
   async delete(request, h) {
     try {
-      const _eventService = request['services'].EventSrv;
-      const _response = await _eventService.delete(request.params.id);
+      const _eventSrv = request['services'].EventSrv;
 
-      if (!_response)
-        throw { message: 'Não existe evento com o id informado!' };
+      const _response = await _eventSrv.delete(request.params.id);
 
       return h.response({
-        message: 'Excluido com sucesso!'
+        message: _response ? 'Excluido com sucesso!' : 'Não foi possível excluir!'
       });
-    } catch (err) {
-      return h.response(err);
-    }
-  }
-
-  async show(request, h) {
-    try {
-      const _eventService = request['services'].EventSrv;
-      const event = await _eventService.showById(request.params.id);
-
-      return h.response(event);
     } catch (err) {
       return h.response(err);
     }

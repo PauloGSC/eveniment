@@ -1,4 +1,9 @@
+import 'dart:developer';
+
+import 'package:eveniment/bloc/userBloc.dart';
+import 'package:eveniment/services/report_client.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -11,14 +16,20 @@ import 'package:date_format/date_format.dart';
 class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    ReportClient.isLogged().then((logged) {
+      if (!logged)
+        Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+    });
+
     final listEventsBloc = Provider.of<ListEventsBloc>(context);
+
     listEventsBloc.fetchEvents();
 
     return Scaffold(
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.only(right: 60.0),
-          child: Center(child: Text('Eveniment')),
+          child: Center(child: Text('Menu')),
         ),
         automaticallyImplyLeading: true,
       ),
@@ -54,8 +65,12 @@ class Menu extends StatelessWidget {
   }
 
   Widget _buildBody(List<EventModel> model, ListEventsBloc listEventsBloc) {
+    Future<bool> isAdmin = ReportClient.isAdmin();
+    final ReportClient _client = ReportClient();
+
     return Container(
         child: ListView.builder(
+      padding: EdgeInsets.only(bottom: 80),
       itemCount: model.length,
       itemBuilder: (context, index) {
         EventModel item = model[index];
@@ -119,6 +134,31 @@ class Menu extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    FutureBuilder(
+                        future: isAdmin,
+                        builder: (cont, snapshot) {
+                          bool data = snapshot.data;
+                          if (snapshot.hasData && data) {
+                            return IconButton(
+                                color: Colors.red,
+                                icon: Icon(Icons.delete),
+                                onPressed: () async {
+                                  bool deleteEvent =
+                                      await _client.deleteEvent(item.id);
+
+                                  if (deleteEvent) {
+                                    listEventsBloc.fetchEvents();
+                                    Toast.show(
+                                      "Evento excluido com sucesso!",
+                                      context,
+                                      gravity: Toast.TOP,
+                                    );
+                                  }
+                                });
+                          } else {
+                            return Text('');
+                          }
+                        }),
                     // ignore: deprecated_member_use
                     FlatButton(
                       child: Text(

@@ -1,9 +1,15 @@
+import 'package:eveniment/services/report_client.dart';
 import 'package:flutter/material.dart';
 import 'package:eveniment/components/drawer/drawer.dart';
 
 class MyCertificates extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    ReportClient.isLogged().then((logged) {
+      if (!logged)
+        Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -58,6 +64,9 @@ class ListItemWidget extends State<SwipeList> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  Center(
+                    child: Text('Apenas um protótipo'),
+                  ),
                   const ListTile(
                     leading: Icon(Icons.picture_as_pdf, size: 70),
                     title: Text('Palestra de I.A',

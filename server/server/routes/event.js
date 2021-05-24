@@ -2,6 +2,7 @@
 
 const Controller = require('../controllers/eventCtrl');
 const schema = require('./schemas/event');
+const Joi = require('joi');
 
 exports.plugin = {
 	name: 'routes-event',
@@ -15,11 +16,18 @@ exports.plugin = {
 		server.route([
 			{
 				method: 'GET',
+				path: '/api/event/myevents',
+				handler: controller.findMyEvents,
+			},
+			{
+				method: 'GET',
 				path: '/api/event',
-				handler: controller.list,
+				handler: controller.findAll,
 				options: {
 					validate: {
-						query: schema.idUser,
+						query: Joi.object({
+							idUser: Joi.number(),
+						})
 					}
 				}
 			}, {
@@ -53,7 +61,7 @@ exports.plugin = {
 			}, {
 				method: 'GET',
 				path: '/api/event/{id}',
-				handler: controller.show,
+				handler: controller.findById,
 				options: {
 					validate: {
 						params: schema.id,

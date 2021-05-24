@@ -1,7 +1,11 @@
+import 'package:eveniment/models/user.dart';
+import 'package:eveniment/services/report_client.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class QuickDrawer extends StatelessWidget {
+  final ReportClient _client = ReportClient();
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -22,7 +26,7 @@ class QuickDrawer extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
                             child: Image.asset(
-                              'assets/user.png',
+                              'assets/user.jpeg',
                               width: 73,
                               height: 73,
                               fit: BoxFit.cover,
@@ -47,6 +51,7 @@ class QuickDrawer extends StatelessWidget {
             Navigator.pushNamed(context, '/myCertificates');
           }),
           _CustomListTile(Icons.exit_to_app, 'Sair', () async {
+            await _client.logout();
             Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
           }),
         ],
@@ -54,11 +59,24 @@ class QuickDrawer extends StatelessWidget {
     );
   }
 
-  static Widget _buildStreamName() {
-    return Text(
-      'Nome do Usuario',
-      style: TextStyle(color: Colors.grey.shade800, fontSize: 20.0),
-    );
+  Widget _buildStreamName() {
+    Future<UserModel> model = _client.fetchUser();
+    return FutureBuilder(
+        future: model,
+        builder: (cont, snapshot) {
+          UserModel data = snapshot.data;
+          if (snapshot.hasData) {
+            return Text(
+              data.name,
+              style: TextStyle(color: Colors.grey.shade800, fontSize: 20.0),
+            );
+          } else {
+            return Text(
+              'Carregando...',
+              style: TextStyle(color: Colors.grey.shade800, fontSize: 20.0),
+            );
+          }
+        });
   }
 }
 

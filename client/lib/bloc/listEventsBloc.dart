@@ -15,10 +15,14 @@ class ListEventsBloc extends ChangeNotifier {
     _controller.sink.add(_results);
   }
 
+  void fetchMyEvents() async {
+    List<EventModel> _results = await _client.listMyEvents();
+    _controller.sink.add(_results);
+  }
+
   Future<bool> subscribe(idEvent) async {
     Map<String, dynamic> model = Map<String, dynamic>();
     model['idEvent'] = idEvent;
-    model['idUs'] = 1;
 
     return await _client.subscribeEvent(model);
   }

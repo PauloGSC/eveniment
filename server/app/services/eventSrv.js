@@ -1,17 +1,43 @@
 'use strict'
 
+const sequelize = require('../commons/repository');
+const event = require('../models/event');
+const subscribe = require('../models/subscribe');
+
 class EventSrv {
 
   constructor(repository) {
     this.repository = repository;
+    this.event = event(repository);
+    this.subscribe = subscribe(repository);
   }
 
-  async find(query) {
+  async findAll(query) {
     try {
-      const columns = 'EV.id, EV.name, EV.subscriptionLink, EV.description, EV.dtInit, EV.dtEnd, EV.dtUpdate, EV.image, EV.idUs, SUB.id as idSubscribe';
-      const [_models] = await this.repository.execute(`select ${columns} from event as EV left join subscribe as SUB on EV.idUs=SUB.idUs and EV.id=SUB.idEvent and EV.idUs=${query.idUser}`);
+      const _columns = 'EV.id, EV.name, EV.subscriptionLink, EV.description, EV.dtInit, EV.dtEnd, EV.updatedAt, EV.image, EV.idUser, SUB.id as idSubscribe';
+      const _models = await sequelize.query(`select ${_columns} from events as EV left join subscribes as SUB on EV.id=SUB.idEvent and SUB.idUser=${query.idUser}`);
 
-      return _models;
+      return _models[0];
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  }
+
+  async findMyEvents(query) {
+    try {
+      const _columns = 'EV.id, EV.name, EV.subscriptionLink, EV.description, EV.dtInit, EV.dtEnd, EV.updatedAt, EV.image, EV.idUser, SUB.id as idSubscribe';
+      const _models = await sequelize.query(`select ${_columns} from events as EV join subscribes as SUB on EV.id=SUB.idEvent and SUB.idUser=${query.idUser}`);
+
+      return _models[0];
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  }
+  async findById(id) {
+    try {
+      return await this.event.findByPk(id);
     } catch (err) {
       console.log(err);
       return err;
@@ -20,50 +46,33 @@ class EventSrv {
 
   async create(model) {
     try {
-      const columns = Object.keys(model);
-      const data = columns.map(key => typeof model[key] == 'string' ? `"${model[key]}"` : model[key]);
-
-      const query = `INSERT INTO event (${columns.join(',')})` +
-        ` VALUES (` + data.join(',') + `)`;
-      const [response] = await this.repository.execute(query);
-
-      return response.insertId;
+      return await this.event.create(model);
     } catch (err) {
+      console.log(err);
       return err;
     }
   }
 
   async update(model, id) {
     try {
-      const columns = Object.keys(model);
-      const data = columns.map(key => `${key}=` + (typeof model[key] == 'string' ? `"${model[key]}"` : model[key]));
 
-      const query = `UPDATE event` +
-        ` set ` + data.join(',') + ` WHERE id=${id}`;
-      const [response] = await this.repository.execute(query);
-
-      return response.info;
+      return await this.event.update(model, {
+        where: { id }
+      });
     } catch (err) {
+      console.log(err);
       return err;
     }
   }
 
   async delete(id) {
     try {
-      const _query = `DELETE FROM event WHERE id = ${id}`;
-      const [response] = await this.repository.execute(_query);
-
-      return response.affectedRows;
-    } catch (err) {
-      return err;
-    }
-  }
-
-  async showById(id) {
-    try {
-      const [_models] = await this.repository.execute('SELECT * FROM event where id=' + id);
-
-      return _models.length ? _models[0] : {};
+      await this.subscribe.destroy({
+        where: { idEvent: id }
+      })
+      return await this.event.destroy({
+        where: { id }
+      });
     } catch (err) {
       return err;
     }

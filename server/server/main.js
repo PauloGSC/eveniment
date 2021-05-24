@@ -2,6 +2,7 @@
 
 const Hapi = require('@hapi/hapi');
 const path = require('path');
+const Config = require('../config/local.json');
 
 require('../app/eveniment');
 
@@ -16,6 +17,15 @@ const init = async () => {
   });
 
   await server.register(require('./middleware/plugins'));
+
+  server.auth.strategy('jwt', 'jwt', {
+    key: Config.authKey,
+    validate: require('./middleware/common/authentication'),
+    verifyOptions: {
+      ignoreExpiration: true
+    }
+  });
+  server.auth.default('jwt');
 
   await server.start();
   console.log('Server running on %s', server.info.uri);

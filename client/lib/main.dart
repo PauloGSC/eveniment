@@ -1,5 +1,6 @@
 import 'package:eveniment/bloc/eventFormBloc.dart';
 import 'package:eveniment/bloc/listEventsBloc.dart';
+import 'package:eveniment/bloc/userBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:eveniment/routes.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<FormEventBloc>.value(value: FormEventBloc()),
         ChangeNotifierProvider<ListEventsBloc>.value(value: ListEventsBloc()),
+        ChangeNotifierProvider<UserBloc>.value(value: UserBloc()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

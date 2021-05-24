@@ -1,5 +1,9 @@
-const mysql = require('mysql2/promise');
-const bluebird = require('bluebird');
+const { Sequelize } = require('sequelize');
 const config = require('../../config/local.json');
 
-module.exports = mysql.createConnection({ ...config, Promise: bluebird });
+const sequelize = new Sequelize(config.database, config.user, config.password, {
+  host: config.host,
+  dialect: 'mysql',
+});
+
+module.exports = sequelize;
