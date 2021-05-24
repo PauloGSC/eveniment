@@ -1,68 +1,62 @@
 'use strict'
 
+const subscribe = require('../models/subscribe');
+
 class SubscribeSrv {
 
   constructor(repository) {
     this.repository = repository;
+    this.subscribe = subscribe(repository);
   }
 
-  async findAll(query) {
+  async findAll() {
     try {
-      const [_models] = await this.repository.execute('SELECT * FROM subscribe');
-
-      return _models;
+      return await this.subscribe.findAll();
     } catch (err) {
+      console.log(err);
+      return err;
+    }
+  }
+
+  async findById(id) {
+    try {
+      return await this.subscribe.findByPk(id);
+    } catch (err) {
+      console.log(err);
       return err;
     }
   }
 
   async create(model) {
     try {
-      const columns = Object.keys(model);
-      const data = columns.map(key => typeof model[key] == 'string' ? `"${model[key]}"` : model[key]);
-
-      const query = `INSERT INTO subscribe (${columns.join(',')})` +
-        ` VALUES (` + data.join(',') + `)`;
-      const [response] = await this.repository.execute(query);
-
-      return response.insertId;
+      return await this.subscribe.create(model);
     } catch (err) {
+      console.log(err);
       return err;
     }
   }
 
   async update(model, id) {
     try {
-      const columns = Object.keys(model);
-      const data = columns.map(key => `${key}=` + (typeof model[key] == 'string' ? `"${model[key]}"` : model[key]));
+      if (model.password)
+        model.password = cripto.encrypt(model.password);
 
-      const query = `UPDATE subscribe` +
-        ` set ` + data.join(',') + ` WHERE id=${id}`;
-      const [response] = await this.repository.execute(query);
-
-      return response.info;
+      return await this.subscribe.update(model, {
+        where: { id }
+      });
     } catch (err) {
+      console.log(err);
       return err;
     }
   }
 
   async delete(id) {
     try {
-      const _query = `DELETE FROM subscribe WHERE id = ${id}`;
-      const [response] = await this.repository.execute(_query);
-
-      return response.affectedRows;
+      return await this.subscribe.destroy({
+        where: { id }
+      });
     } catch (err) {
-      return err;
-    }
-  }
-
-  async showById(id) {
-    try {
-      const [_models] = await this.repository.execute('SELECT * FROM subscribe where id=' + id);
-
-      return _models.length ? _models[0] : {};
-    } catch (err) {
+      console.log(err);
       return err;
     }
   }

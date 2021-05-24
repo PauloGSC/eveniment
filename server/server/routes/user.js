@@ -2,6 +2,7 @@
 
 const Controller = require('../controllers/userCtrl');
 const schema = require('./schemas/user');
+const Joi = require('joi');
 
 exports.plugin = {
 	name: 'routes-user',
@@ -14,22 +15,53 @@ exports.plugin = {
 
 		server.route([
 			{
+				method: 'GET',
+				path: '/api/user/login',
+				handler: controller.login,
+				options: {
+					auth: false,
+					validate: {
+						query: Joi.object({
+							email: Joi.string().required(),
+							password: Joi.string().required()
+						})
+					}
+				}
+			}, {
+				method: 'GET',
+				path: '/api/user',
+				handler: controller.findAll,
+				options: {
+					validate: {
+						query: Joi.object({})
+					}
+				}
+			}, {
+				method: 'GET',
+				path: '/api/user/{id}',
+				handler: controller.findById,
+				options: {
+					validate: {
+						params: schema.id,
+					}
+				}
+			}, {
 				method: 'POST',
 				path: '/api/user',
 				handler: controller.create,
 				options: {
+					auth: false,
 					validate: {
 						payload: schema.payload,
 					}
 				}
 			}, {
 				method: 'PUT',
-				path: '/api/user',
+				path: '/api/user/{id}',
 				handler: controller.update,
 				options: {
 					validate: {
 						payload: schema.payload,
-						query: schema.id,
 					}
 				}
 			}, {
@@ -41,16 +73,7 @@ exports.plugin = {
 						params: schema.id,
 					}
 				}
-			}, {
-				method: 'GET',
-				path: '/api/user/{id}',
-				handler: controller.show,
-				options: {
-					validate: {
-						params: schema.id,
-					}
-				}
-			}
+			},
 		]);
 	}
 }

@@ -11,7 +11,7 @@ exports.plugin = {
   register: async function (server, options, next) {
     let _repository = await repository;
     _repository.buildConditions = buildConditions;
-    
+
     function getFnName(fn) {
       const f = typeof fn == 'function';
       const s = f && ((fn.name && ['', fn.name]) || fn.toString().match(/function ([^\(]+)/));
@@ -27,7 +27,7 @@ exports.plugin = {
     server.ext('onRequest', function (request, h) {
       request['services'] = {};
       loadServices(request);
-    
+
       return h.continue;
     });
   }

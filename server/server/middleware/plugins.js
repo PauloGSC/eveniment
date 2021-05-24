@@ -22,6 +22,7 @@ let plugins = [
   { plugin: require('@hapi/inert') },
   { plugin: require('./loader/loader-router') },
   { plugin: require('./loader/loader-services') },
+  { plugin: require('hapi-auth-jwt2') },
 ];
 
 module.exports = plugins;

@@ -16,7 +16,7 @@ exports.plugin = {
       {
         method: 'GET',
         path: '/api/subscribe',
-        handler: controller.list,
+        handler: controller.findAll,
       }, {
         method: 'POST',
         path: '/api/subscribe',
@@ -48,7 +48,7 @@ exports.plugin = {
       }, {
         method: 'GET',
         path: '/api/subscribe/{id}',
-        handler: controller.show,
+        handler: controller.findById,
         options: {
           validate: {
             params: schema.id,

@@ -6,9 +6,8 @@ payload = Joi.object({
   description: Joi.string().max(300).required(),
   dtInit: Joi.string().required(),
   dtEnd: Joi.string().required(),
-  dtUpdate: Joi.string().required(),
   image: Joi.string(),
-  idUs: Joi.number().required(),
+  idUser: Joi.number().required(),
 });
 
 id = Joi.object({

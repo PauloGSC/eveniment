@@ -6,7 +6,7 @@ class EventModel {
   String subscriptionLink;
   String description;
   String image;
-  int idUs;
+  int idUser;
   int idSubscribe;
   DateTime dtUpdate;
   DateTime dtInit;
@@ -17,12 +17,10 @@ class EventModel {
 
     map['name'] = this.name;
     map['description'] = this.description;
-    map['image'] = this.image != null ? this.image : null;
-    map['idUs'] = this.idUs;
     map['subscriptionLink'] = this.subscriptionLink;
-    map['dtUpdate'] = this.dtUpdate != null ? this.dtUpdate.toString() : '';
     map['dtInit'] = this.dtInit != null ? this.dtInit.toString() : '';
     map['dtEnd'] = this.dtEnd != null ? this.dtEnd.toString() : '';
+    map['image'] = this.image != null ? this.image : null;
 
     return map;
   }
@@ -33,8 +31,7 @@ class EventModel {
         subscriptionLink = jsonMap['subscriptionLink'],
         description = jsonMap['description'],
         image = jsonMap['image'],
-        idUs = jsonMap['idUs'],
-        dtUpdate = DateTime.parse(jsonMap['dtUpdate']),
+        idUser = jsonMap['idUser'],
         dtInit = DateTime.parse(jsonMap['dtInit']),
         dtEnd = DateTime.parse(jsonMap['dtEnd']),
         idSubscribe = jsonMap['idSubscribe'];

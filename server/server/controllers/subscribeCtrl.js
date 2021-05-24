@@ -8,12 +8,22 @@ class SubscribeController {
     this.server = server;
   }
 
-  async list(request, h) {
+  async findAll(request, h) {
     try {
-      const _subscribeService = request['services'].SubscribeSrv;
-      const _subscribe = await _subscribeService.findAll();
+      const _subscribeSrv = request['services'].SubscribeSrv;
+      const _models = await _subscribeSrv.findAll();
 
-      return h.response(_subscribe);
+      return h.response(_models);
+    } catch (err) {
+      return h.response(err);
+    }
+  }
+
+  async findById(request, h) {
+    try {
+      const _subscribeSrv = request['services'].SubscribeSrv;
+      const _models = await _subscribeSrv.findById(request.params.id);
+      return h.response(_models);
     } catch (err) {
       return h.response(err);
     }
@@ -21,34 +31,25 @@ class SubscribeController {
 
   async create(request, h) {
     try {
-      const _subscribeService = request['services'].SubscribeSrv;
-      const _id = await _subscribeService.create(request.payload);
+      const _subscribeSrv = request['services'].SubscribeSrv;
+      const _model = await _subscribeSrv.create(request.payload);
 
-      if (typeof _id != 'number')
-        throw { message: 'Erro ao criar inscrição!' };
-
-      return h.response({
-        id: _id,
-        message: 'Criado com sucesso!'
-      });
+      return h.response(_model);
     } catch (err) {
       return h.response(err);
     }
   }
 
+
   async update(request, h) {
     try {
-      const params = qs.parse(request.query);
-      const _subscribeService = request['services'].SubscribeSrv;
-      const response = await _subscribeService.update(request.payload, params.id);
-
-      if (!response)
-        throw { message: 'Erro ao atualizar inscrição!' };
+      const _subscribeSrv = request['services'].SubscribeSrv;
+      const _response = await _subscribeSrv.update(request.payload, request.params.id);
 
       return h.response({
-        id: params.id,
-        message: 'Atualizado com sucesso!'
+        message: _response[0] ? 'Atualizado com sucesso!' : 'Não foi possível atualizar!'
       });
+
     } catch (err) {
       return h.response(err);
     }
@@ -56,26 +57,13 @@ class SubscribeController {
 
   async delete(request, h) {
     try {
-      const _subscribeService = request['services'].SubscribeSrv;
-      const _response = await _subscribeService.delete(request.params.id);
+      const _subscribeSrv = request['services'].SubscribeSrv;
 
-      if (!_response)
-        throw { message: 'Não existe inscrição com o id informado!' };
+      const _response = await _subscribeSrv.delete(request.params.id);
 
       return h.response({
-        message: 'Excluido com sucesso!'
+        message: _response ? 'Excluido com sucesso!' : 'Não foi possível excluir!'
       });
-    } catch (err) {
-      return h.response(err);
-    }
-  }
-
-  async show(request, h) {
-    try {
-      const _subscribeService = request['services'].SubscribeSrv;
-      const _subscribe = await _subscribeService.showById(request.params.id);
-
-      return h.response(_subscribe);
     } catch (err) {
       return h.response(err);
     }

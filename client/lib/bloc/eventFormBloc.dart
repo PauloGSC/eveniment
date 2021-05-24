@@ -50,8 +50,6 @@ class FormEventBloc extends ChangeNotifier {
 
   Future<bool> postForm(EventModel model) async {
     Map<String, dynamic> data = model.toMap();
-    data['idUs'] = 1;
-    data['dtUpdate'] = DateTime.now().toString();
 
     bool response = await _client.createEvent(data);
 

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:eveniment/bloc/eventFormBloc.dart';
 import 'package:eveniment/models/event.dart';
+import 'package:eveniment/services/report_client.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,11 @@ class _FormEvent extends State<FormEvent> {
 
   @override
   Widget build(BuildContext cont) {
+    ReportClient.isLogged().then((logged) {
+      if (!logged)
+        Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+    });
+
     final appTitle = 'Criar Evento';
     final formEventBloc = Provider.of<FormEventBloc>(cont);
     formEventBloc.inicializeModel();
@@ -136,7 +142,7 @@ class _FormEvent extends State<FormEvent> {
                             child: Text('Publicar evento'),
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {
-                                formEventBloc.postForm(model);
+                                await formEventBloc.postForm(model);
                                 Navigator.pushReplacementNamed(cont, '/menu');
                               }
                             },
@@ -233,7 +239,8 @@ class _FormEvent extends State<FormEvent> {
   }
 
   Future _getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.getImage(
+        source: ImageSource.gallery, maxHeight: 600, maxWidth: 600);
 
     setState(() {
       if (pickedFile != null) {

@@ -1,6 +1,10 @@
+import 'package:eveniment/bloc/userBloc.dart';
+import 'package:eveniment/models/user.dart';
 import 'package:eveniment/services/report_client.dart';
 import 'package:flutter/material.dart';
 import 'package:eveniment/components/clipper.dart';
+import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -9,22 +13,20 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   ReportClient client = ReportClient();
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
   TextEditingController _nameController = new TextEditingController();
-  String _email;
-  String _password;
-  String _displayName;
-  bool _obsecure = false;
 
   @override
   Widget build(BuildContext context) {
     Color primary = Theme.of(context).primaryColor;
-    void initState() {
-      super.initState();
-    }
+    final _userBloc = Provider.of<UserBloc>(context);
+
+    ReportClient.isLogged().then((logged) {
+      if (logged)
+        Navigator.pushNamedAndRemoveUntil(context, '/menu', (_) => false);
+    });
 
     Widget logo() {
       return Padding(
@@ -88,12 +90,15 @@ class _LoginState extends State<Login> {
     }
 
     //input widget
-    Widget _input(Icon icon, String hint, TextEditingController controller,
-        bool obsecure) {
+    Widget _input(Icon icon, String hint, Function set, bool obsecure,
+        TextInputType type) {
       return Container(
         padding: EdgeInsets.only(left: 20, right: 20),
         child: TextField(
-          controller: controller,
+          onChanged: (text) {
+            set(text);
+          },
+          keyboardType: type,
           obscureText: obsecure,
           style: TextStyle(
             fontSize: 20,
@@ -164,10 +169,6 @@ class _LoginState extends State<Login> {
       model['password'] = _passwordController.text;
       model['username'] = _nameController.text;
 
-      _email = _emailController.text;
-      _password = _passwordController.text;
-      _displayName = _nameController.text;
-
       //client.createLogin(model);
       _emailController.clear();
       _passwordController.clear();
@@ -194,8 +195,6 @@ class _LoginState extends State<Login> {
                           child: IconButton(
                             onPressed: () {
                               Navigator.of(context).pop();
-                              _emailController.clear();
-                              _passwordController.clear();
                             },
                             icon: Icon(
                               Icons.close,
@@ -245,7 +244,77 @@ class _LoginState extends State<Login> {
                             ],
                           ),
                         ),
-                        Padding(
+                        StreamBuilder(
+                            stream: _userBloc.userForm,
+                            builder: (cont, snapshot) {
+                              _userBloc.inicializeModel();
+
+                              UserModel model = snapshot.data;
+
+                              return Column(
+                                children: [
+                                  SizedBox(
+                                    height: 50,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: 20,
+                                    ),
+                                    child: _input(
+                                        Icon(Icons.email),
+                                        "Email",
+                                        _userBloc.setEmail,
+                                        false,
+                                        TextInputType.text),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: 20,
+                                    ),
+                                    child: _input(
+                                        Icon(Icons.lock),
+                                        "Senha",
+                                        _userBloc.setPassword,
+                                        true,
+                                        TextInputType.text),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 20,
+                                        right: 20,
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom),
+                                    child: Container(
+                                      child: _button(
+                                          "CONFIRMAR",
+                                          Colors.white,
+                                          primary,
+                                          primary,
+                                          Colors.white, () async {
+                                        bool login =
+                                            await _userBloc.login(model);
+                                        if (login) {
+                                          Navigator.pushNamed(context, '/menu');
+                                        } else {
+                                          Toast.show(
+                                            'Senha ou usuário inválid!',
+                                            context,
+                                            gravity: Toast.TOP,
+                                          );
+                                        }
+                                      }),
+                                      height: 50,
+                                      width: MediaQuery.of(context).size.width,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
+                        /*  Padding(
                           padding: EdgeInsets.only(bottom: 20, top: 60),
                           child: _input(Icon(Icons.email), "EMAIL",
                               _emailController, false),
@@ -254,27 +323,8 @@ class _LoginState extends State<Login> {
                           padding: EdgeInsets.only(bottom: 20),
                           child: _input(Icon(Icons.lock), "SENHA",
                               _passwordController, true),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: 20,
-                              right: 20,
-                              bottom: MediaQuery.of(context).viewInsets.bottom),
-                          child: Container(
-                            child: _button(
-                                "CONFIRMAR",
-                                Colors.white,
-                                primary,
-                                primary,
-                                Colors.white,
-                                () => {Navigator.pushNamed(context, '/menu')}),
-                            height: 50,
-                            width: MediaQuery.of(context).size.width,
-                          ),
-                        ),
+                        ), */
+
                         SizedBox(
                           height: 20,
                         ),
@@ -381,41 +431,114 @@ class _LoginState extends State<Login> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 20,
-                          top: 60,
-                        ),
-                        child: _input(Icon(Icons.account_circle), "NOME",
-                            _nameController, false),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 20,
-                        ),
-                        child: _input(Icon(Icons.email), "EMAIL",
-                            _emailController, false),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 20),
-                        child: _input(Icon(Icons.lock), "SENHA",
-                            _passwordController, true),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: 20,
-                            right: 20,
-                            bottom: MediaQuery.of(context).viewInsets.bottom),
-                        child: Container(
-                          child: _button("CONFIRMAR", Colors.white, primary,
-                              primary, Colors.white, _registerUser),
-                          height: 50,
-                          width: MediaQuery.of(context).size.width,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
+                      StreamBuilder(
+                          stream: _userBloc.userForm,
+                          builder: (cont, snapshot) {
+                            _userBloc.inicializeModel();
+
+                            UserModel model = snapshot.data;
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: 20,
+                                    top: 60,
+                                  ),
+                                  child: _input(
+                                      Icon(Icons.account_circle),
+                                      "Nome",
+                                      _userBloc.setName,
+                                      false,
+                                      TextInputType.text),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: 20,
+                                  ),
+                                  child: _input(
+                                      Icon(Icons.email),
+                                      "Email",
+                                      _userBloc.setEmail,
+                                      false,
+                                      TextInputType.text),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: 20,
+                                  ),
+                                  child: _input(
+                                      Icon(Icons.work),
+                                      "Ocupação",
+                                      _userBloc.setOcupation,
+                                      false,
+                                      TextInputType.text),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: 20,
+                                  ),
+                                  child: _input(
+                                      Icon(Icons.school),
+                                      "Número da Matricula",
+                                      _userBloc.setRegistration,
+                                      false,
+                                      TextInputType.number),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: 20,
+                                  ),
+                                  child: _input(
+                                      Icon(Icons.lock),
+                                      "Senha",
+                                      _userBloc.setPassword,
+                                      true,
+                                      TextInputType.text),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 20,
+                                      right: 20,
+                                      bottom: MediaQuery.of(context)
+                                          .viewInsets
+                                          .bottom),
+                                  child: Container(
+                                    child: _button(
+                                        "CONFIRMAR",
+                                        Colors.white,
+                                        primary,
+                                        primary,
+                                        Colors.white, () async {
+                                      bool created =
+                                          await _userBloc.create(model);
+
+                                      if (created) {
+                                        Toast.show(
+                                          "Usuário criado com sucesso!",
+                                          context,
+                                          gravity: Toast.BOTTOM,
+                                        );
+                                        Navigator.of(context).pop();
+                                      } else {
+                                        Toast.show(
+                                          "Todos os campos exceto o número da mátricula, são campos obrigatórios!",
+                                          context,
+                                          gravity: Toast.BOTTOM,
+                                        );
+                                      }
+
+                                      _userBloc.inicializeModel();
+                                    }),
+                                    height: 50,
+                                    width: MediaQuery.of(context).size.width,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            );
+                          }),
                     ]),
                   ),
                 ],
@@ -446,6 +569,7 @@ class _LoginState extends State<Login> {
             ),
             Padding(
               child: Container(
+                // ignore: deprecated_member_use
                 child: OutlineButton(
                   highlightedBorderColor: Colors.white,
                   borderSide: BorderSide(color: Colors.white, width: 2.0),

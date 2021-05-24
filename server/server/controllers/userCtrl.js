@@ -8,36 +8,65 @@ class UserController {
     this.server = server;
   }
 
-  async create(request, h) {
+  async login(request, h) {
     try {
-      const _clientService = request['services'].UserSrv;
-      const _id = await _clientService.create(request.payload);
-
-      if (typeof _id != 'number')
-        throw { message: 'Erro ao criar cliente!' };
+      const _userSrv = request['services'].UserSrv;
+      const _response = await _userSrv.login(request.query.email, request.query.password);
 
       return h.response({
-        id: _id,
-        message: 'Criado com sucesso!'
+        token: _response.token,
+        idUser: _response.id,
+        isAdmin: _response.isAdmin,
+        message: _response.token ? 'Login realizado com sucesso!' : 'Senha ou email inválido!',
       });
     } catch (err) {
       return h.response(err);
     }
   }
 
+  async findAll(request, h) {
+    try {
+      const _userSrv = request['services'].UserSrv;
+      const _models = await _userSrv.findAll();
+
+      return h.response(_models);
+    } catch (err) {
+      return h.response(err);
+    }
+  }
+
+  async findById(request, h) {
+    try {
+      const _userSrv = request['services'].UserSrv;
+      const _models = await _userSrv.findById(request.params.id);
+      return h.response(_models);
+    } catch (err) {
+      return h.response(err);
+    }
+  }
+
+  async create(request, h) {
+    try {
+      const _userSrv = request['services'].UserSrv;
+      const _model = await _userSrv.create(request.payload);
+
+
+      return h.response(_model);
+    } catch (err) {
+      return h.response(err);
+    }
+  }
+
+
   async update(request, h) {
     try {
-      const params = qs.parse(request.query);
-      const _userService = request['services'].UserSrv;
-      const response = await _userService.update(request.payload, params.id);
-
-      if (!response)
-        throw { message: 'Erro ao atualizar usuário!' };
+      const _userSrv = request['services'].UserSrv;
+      const _response = await _userSrv.update(request.payload, request.params.id);
 
       return h.response({
-        id: params.id,
-        message: 'Atualizado com sucesso!'
+        message: _response[0] ? 'Atualizado com sucesso!' : 'Não foi possível atualizar!'
       });
+
     } catch (err) {
       return h.response(err);
     }
@@ -45,26 +74,13 @@ class UserController {
 
   async delete(request, h) {
     try {
-      const _userService = request['services'].UserSrv;
-      const _response = await _userService.delete(request.params.id);
+      const _userSrv = request['services'].UserSrv;
 
-      if (!_response)
-        throw { message: 'Não existe usuário com o id informado!' };
+      const _response = await _userSrv.delete(request.params.id);
 
       return h.response({
-        message: 'Excluido com sucesso!'
+        message: _response ? 'Excluido com sucesso!' : 'Não foi possível excluir!'
       });
-    } catch (err) {
-      return h.response(err);
-    }
-  }
-
-  async show(request, h) {
-    try {
-      const _userService = request['services'].UserSrv;
-      const _user = await _userService.showById(request.params.id);
-
-      return h.response(_user);
     } catch (err) {
       return h.response(err);
     }
